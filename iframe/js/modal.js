@@ -68,7 +68,7 @@ var animations = {
             this.optimizelyTextAB();
 
             // If no org is set, then 16% chance of free press
-            if (!this.options.org && Math.random() < 0.16) {
+            if (!this.options.org && Math.random() < 0.02) {
                 this.options.org = 'fp';
             }
 
