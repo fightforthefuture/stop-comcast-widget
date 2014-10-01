@@ -82,7 +82,7 @@ var _cc_animations = {
 		// Default options: Override these with _cc_options object (see above)
 		options: {
 			modalAnimation: 'modal',
-			skipEmailSignup: true,
+			skipEmailSignup: false,
 			skipCallTool: false,
 			boxUnchecked: false,
 			org: null
