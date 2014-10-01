@@ -61,23 +61,8 @@ var animations = {
                 $('.disclosure').removeClass('nice-check');
             }
 
-            // ------------------------------ Optimizely test vvv
-            if (this.options.fastAnimation || (!document.skipOptimizely && document.fastForwardAnimation))
-            {
-                $('body').addClass('fast-animation');
-                setTimeout(stupidIEZoomFix, 10);
-            }
-            else
-            {
-                setTimeout(stupidIEZoomFix, 2250);
-            }
 
-            // Optimizely test vvv
-            if (!document.skipOptimizely && document.showCTATextImmediately)
-            {
-                $('#header h1').css('opacity', 0);
-                $('#header .cta').css('opacity', 1);
-            }
+            setTimeout(stupidIEZoomFix, 10);
 
             // Optimizely test vvv
             this.optimizelyTextAB();
@@ -257,6 +242,7 @@ var animations = {
 
 
             // doc['action_comment'] = $("[name=action_comment]").val();
+            doc['action'] = 'comcastmonopoly';
             doc['action_comment'] = '';  // JL HACK
             doc['country'] = $('#country').val();
 
@@ -313,9 +299,9 @@ var animations = {
             $('#call').html('Calling...');
 
             var data = {
-                campaignId: 'battleforthenet',
+                campaignId: 'comcastmonopoly',
                 userPhone: num,
-                fftfCampaign: 'internetslowdown',
+                fftfCampaign: 'comcastmonopoly',
                 fftfReferer: host,
                 fftfSession: session
             }
@@ -363,78 +349,24 @@ var animations = {
 
         optimizelyTextAB: function() {
 
-            // JL NOTE ~ disabled
-            return false;
+            if(!document.textVariation ||! $('#'+document.textVariation).length)
+                return false;
 
-            var textVariation = null;
-
-            if (document.textVariation)
-                textVariation = document.textVariation
-
-            var showVariation = function(headline, ctaTop, ctaBottom) {
-                $('#header h1').html(headline);
-                $('#header .cta p em').html(ctaTop);
-                $('#header .cta p strong').html(ctaBottom);
-            };
-
-            switch (textVariation) {
-
-                case 'variation1':
-                    showVariation(
-                        '<em>If this site was still loading,</em> would you still be here?',
-                        'Big ISPs want the power to slow (and break!) sites like ours.',
-                        'Tell lawmakers: &ldquo;Stop discrimination. Defend net neutrality.&rdquo;'
-                    );
-                    break;
-
-                case 'variation2':
-                    showVariation(
-                        '<em>If this site was still loading,</em> would you still be here?',
-                        'Big ISPs want the power to slow (and break!) sites like ours.',
-                        'Don\'t let them destroy the best parts of the Internet. Sign now!'
-                    );
-                    break;
-
-                case 'variation3':
-                    showVariation(
-                        '<em>If this site was still loading,</em> would you still be here?',
-                        'Comcast wants the power to slow (and break!) any website.',
-                        'Only you can stop them. Please, sign this letter.'
-                    );
-                    break;
-
-                case 'variation4':
-                    showVariation(
-                        '<em>If this site was still loading,</em> would you still be here?',
-                        'Cable giants want the power to slow (and break!) sites like ours.',
-                        'Tell lawmakers: &ldquo;Stop discrimination. Defend net neutrality.&rdquo;'
-                    );
-                    break;
-
-                default:
-                    break;
-            }
+            $('.cta_variant').hide();
+            $('#'+document.textVariation).css('display', 'inline');
         }
     }
 }
 
 $(document).ready(function() {
 
-    $('#header h1').html($('h1.headline').html());
-    $('#header .cta p').html($('p.cta-hidden-trust-me').html());
-
-    setTimeout(function() {
-        $('#header .cta').css('height', $('#header').outerHeight()+'px');
-        $('#letter').css('height', $('#modal').outerHeight()+'px');
-        $('#letter').css('opacity', 1);
-    }, 1000);
+   
 
     var loc = window.location.href;
 
     if (loc.indexOf('EMBED') != -1) {
 
         document.body.className = 'embedded';
-        document.skipOptimizely = true;
 
         if (loc.indexOf('NOCALL') != -1)
             animations.modal.options.skipCallTool = true; 

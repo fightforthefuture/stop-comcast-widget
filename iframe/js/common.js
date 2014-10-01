@@ -23,10 +23,10 @@
     for the JavaScript code in this page.
  */
 window.addEventListener('message', function(e) {
-	if (!e.data || !e.data.BFTN_WIDGET_MSG)
+	if (!e.data || !e.data.CC_WIDGET_MSG)
 		return;
 
-	delete e.data.BFTN_WIDGET_MSG;
+	delete e.data.CC_WIDGET_MSG;
 
     if (e.data.HOST_NAME)
     {
@@ -56,7 +56,7 @@ var sendMessage = function(requestType, data)
 {
 	data || (data = {});
 	data.requestType = requestType;
-	data.BFTN_IFRAME_MSG = true;
+	data.CC_IFRAME_MSG = true;
 	parent.postMessage(data, '*');
 }
 
@@ -71,7 +71,7 @@ var trackLeaderboardStat = function(options)
         return;
 
     var data = {
-        campaign: 'internetslowdown',
+        campaign: 'comcastmonopoly',
         stat: options.stat,
         data: options.data,
         host: host,

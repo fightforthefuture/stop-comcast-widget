@@ -26,7 +26,7 @@
 (function(){ // :)
 
 // Default URL for animation iframe. This gets overlay'ed over your page.
-var dfurl = 'https://widget.battleforthenet.com/iframe';
+var dfurl = 'https://fightforthefuture.github.io/stop-comcast-widget/iframe';
 
 
 /**
@@ -34,62 +34,61 @@ var dfurl = 'https://widget.battleforthenet.com/iframe';
 CONFIGURATION OPTIONS
 --------------------------------------------------------------------------------
 These are default configuration values for the widget. You can override any of
-these by pre-defining an object named _bftn_options and setting the appropriate
+these by pre-defining an object named _cc_options and setting the appropriate
 properties as desired.
 --------------------------------------------------------------------------------
 */
 
-// The _bftn_options object is created if it isn't already defined by you
-if (typeof _bftn_options == "undefined")
-	_bftn_options = {};
+// The _cc_options object is created if it isn't already defined by you
+if (typeof _cc_options == "undefined")
+	_cc_options = {};
 
 // The path to the iframe that gets injected over your page
-if (typeof _bftn_options.iframe_base_path == "undefined")
-	_bftn_options.iframe_base_path = dfurl;
+if (typeof _cc_options.iframe_base_path == "undefined")
+	_cc_options.iframe_base_path = dfurl;
 
-// Which design to show, either "modal" or "banner" (see _bftn_animations below)
-if (typeof _bftn_options.animation == "undefined")
-	_bftn_options.animation = 'modal';
+// Which design to show, either "modal" or "banner" (see _cc_animations below)
+if (typeof _cc_options.animation == "undefined")
+	_cc_options.animation = 'modal';
 
 // How long to delay before showing the widget
-if (typeof _bftn_options.delay == "undefined")
-	_bftn_options.delay = 0;
+if (typeof _cc_options.delay == "undefined")
+	_cc_options.delay = 0;
 
 // If set to true, we will log stuff to the console
-if (typeof _bftn_options.debug == "undefined")
-	_bftn_options.debug = false;
+if (typeof _cc_options.debug == "undefined")
+	_cc_options.debug = false;
 
 // Usually a cookie is used to only show the widget once. You can override here.
-if (typeof _bftn_options.always_show_widget == "undefined")
-	_bftn_options.always_show_widget = false;
+if (typeof _cc_options.always_show_widget == "undefined")
+	_cc_options.always_show_widget = false;
 
 /**
 --------------------------------------------------------------------------------
 ANIMATION DEFINITIONS
 --------------------------------------------------------------------------------
-Here's where the functionality and defaults for each of the animations (either
-"modal" or "banner" to begin with). Each animation has its own options property,
+Here's where the functionality and defaults for each of the animations (just
+"modal" for now). Each animation has its own options property,
 which is an object containing default behaviors for that animation. These can be
-overridden by passing the appropriately-named properties into the _bftn_options
+overridden by passing the appropriately-named properties into the _cc_options
 object (above). This will get merged over the defaults when init is called.
 --------------------------------------------------------------------------------
 */
-var _bftn_animations = {
+var _cc_animations = {
 
 	// MODAL ANIMATION
 	modal: {
 
-		// Default options: Override these with _bftn_options object (see above)
+		// Default options: Override these with _cc_options object (see above)
 		options: {
 			modalAnimation: 'modal',
-			skipEmailSignup: false,
+			skipEmailSignup: true,
 			skipCallTool: false,
-			fastAnimation: false,
 			boxUnchecked: false,
 			org: null
 		},
 
-		// init copies the _bftn_options properties over the default options
+		// init copies the _cc_options properties over the default options
 		init: function(options) {
 			for (var k in options) this.options[k] = options[k];
 			return this;
@@ -97,87 +96,18 @@ var _bftn_animations = {
 
 		// what to do when the animation starts
 		start: function() {
-			var css = '#_bftn_iframe { position: fixed; left: 0px; top: 0px; \
+			var css = '#_cc_iframe { position: fixed; left: 0px; top: 0px; \
 				width: 100%; height: 100%; z-index: 100001; }'
 
-			_bftn_util.injectCSS('_bftn_iframe_css', css);
+			_cc_util.injectCSS('_cc_iframe_css', css);
 
-			var iframe = _bftn_util.createIframe(this.options.modalAnimation);
-			_bftn_util.bindIframeCommunicator(iframe, this);
+			var iframe = _cc_util.createIframe(this.options.modalAnimation);
+			_cc_util.bindIframeCommunicator(iframe, this);
 		},
 
 		// what to do when the animation stops
 		stop: function() {
-			_bftn_util.destroyIframe();
-		}
-	},
-
-	// BANNER ANIMATION
-	banner: {
-
-		// Default options: Override these with _bftn_options object (see above)
-		options: {
-			modalAnimation: 'banner',
-			position: 'topright', // topright|bottomright
-			width: 430,
-			height: 104,
-			offsetY: 20,
-			url: 'https://www.battleforthenet.com',
-			theme: 'light'
-		},
-
-		// init copies the _bftn_options properties over the default options
-		init: function(options) {
-			for (var k in options) this.options[k] = options[k];
-			return this;
-		},
-
-		// what to do when the animation starts
-		start: function() {
-
-			console.log('width: ', this.options.width);
-
-			switch (this.options.position) {
-
-				case 'bottomright':
-					var pos = 'bottom: '+this.options.offsetY+'px; right: 0px;';
-					var stripPos = 'bottom';
-					break;
-
-				default:
-					var pos = 'top: '+this.options.offsetY+'px; right: 0px;'
-					var stripPos = 'top';
-					break;
-			}
-
-			// The window must be a certain width to show the floating banner
-			// otherwise it will be fixed to the top / bottom
-			var minFloatWidth = this.options.width-1;
-
-			var css = '#_bftn_iframe { \
-					position: fixed; '+pos+' \
-					width: '+this.options.width+'px; \
-					height: '+this.options.height+'px; \
-					z-index: 100001; \
-				} \
-				@media (max-width:'+minFloatWidth+'px) { \
-					#_bftn_iframe { \
-						position: absolute; \
-						width: 100%; \
-						left: 0px; \
-						'+stripPos+': 0px; \
-					} \
-				}';
-
-			_bftn_util.injectCSS('_bftn_iframe_css', css);
-
-			var iframe = _bftn_util.createIframe(this.options.modalAnimation);
-			_bftn_util.bindIframeCommunicator(iframe, this);
-		},
-
-		// what to do when the animation stops
-		stop: function() {
-			_bftn_util.destroyIframe();
+			_cc_util.destroyIframe();
 		}
 	}
 }
@@ -187,7 +117,7 @@ var _bftn_animations = {
 UTILITY FUNCTIONS
 --------------------------------------------------------------------------------
 */
-var _bftn_util = {
+var _cc_util = {
 
 	// Inject CSS styles into the page
 	injectCSS: function(id, css)
@@ -203,8 +133,8 @@ var _bftn_util = {
 	// Create the iframe used to display the animation  
 	createIframe: function(animation) {
 		var iframe = document.createElement('iframe');
-		iframe.id = '_bftn_iframe';
-		iframe.src = _bftn_options.iframe_base_path + '/' + animation + '.html';
+		iframe.id = '_cc_iframe';
+		iframe.src = _cc_options.iframe_base_path + '/' + animation + '.html';
 		iframe.frameBorder = 0;
 		iframe.allowTransparency = true; 
 		iframe.style.display = 'none';
@@ -214,7 +144,7 @@ var _bftn_util = {
 
 	// Destroy the iframe used to display the animation
 	destroyIframe: function() {
-		var iframe = document.getElementById('_bftn_iframe');
+		var iframe = document.getElementById('_cc_iframe');
 		iframe.parentNode.removeChild(iframe);
 	},
 
@@ -226,7 +156,7 @@ var _bftn_util = {
 		{
 			data || (data = {});
 			data.requestType = requestType;
-			data.BFTN_WIDGET_MSG = true;
+			data.CC_WIDGET_MSG = true;
 			data.HOST_NAME = hostname;
 			iframe.contentWindow.postMessage(data, '*');
 		}
@@ -238,10 +168,10 @@ var _bftn_util = {
 		var hostname = this.getHostname();
 
 		eventer(messageEvent,function(e) {
-			if (!e.data || !e.data.BFTN_IFRAME_MSG)
+			if (!e.data || !e.data.CC_IFRAME_MSG)
 				return;
 
-			delete e.data.BFTN_IFRAME_MSG;
+			delete e.data.CC_IFRAME_MSG;
 
 			switch (e.data.requestType) {
 				case 'getAnimation':
@@ -285,9 +215,9 @@ var _bftn_util = {
 		return hostname;
 	},
 
-	// If _bftn_options.debug is on, then console.log some stuff
+	// If _cc_options.debug is on, then console.log some stuff
 	log: function() {
-		if (_bftn_options.debug)
+		if (_cc_options.debug)
 			console.log.apply(console, arguments);
 	}
 }
@@ -300,10 +230,10 @@ MAIN FUNCTIONALITY (called once the page is ready)
 var ready = function() {
 
 	// Should we show the widget, regardless?
-	var url_override = window.location.href.indexOf('SHOW_BFTN_WIDGET') > -1;
-	if (!_bftn_options.always_show_widget && url_override == false) {
+	var url_override = window.location.href.indexOf('SHOW_CC_WIDGET') > -1;
+	if (!_cc_options.always_show_widget && url_override == false) {
 		// Only show once.
-		if (_bftn_util.getCookie('_BFTN_WIDGET_SHOWN')) {
+		if (_cc_util.getCookie('_CC_WIDGET_SHOWN')) {
 			return;
 		}
 
@@ -314,23 +244,20 @@ var ready = function() {
 		}
 	}
 
-	_bftn_util.setCookie('_BFTN_WIDGET_SHOWN', 'true', 365);
+	_cc_util.setCookie('_CC_WIDGET_SHOWN', 'true', 365);
 
-	// JL HACK ~ Force iPhone / iPod to show banner while we fix issues
+	// JL HACK ~ Disable on iPod / iPhone
 	if(/(iPhone|iPod)/g.test(navigator.userAgent))
-		_bftn_options.animation = 'banner';
+		return false;
 
-	if (typeof _bftn_animations[_bftn_options.animation] == "undefined")
-		return _bftn_util.log('Animation undefined: '+_bftn_options.animation);
+	if (typeof _cc_animations[_cc_options.animation] == "undefined")
+		return _cc_util.log('Animation undefined: '+_cc_options.animation);
 
-	var animation = _bftn_animations[_bftn_options.animation];
-
-	var images = new Array()
-	var preloaded = 0;
+	var animation = _cc_animations[_cc_options.animation];
 
 	setTimeout(function() {
-		animation.init(_bftn_options).start();
-	}, _bftn_options.delay);
+		animation.init(_cc_options).start();
+	}, _cc_options.delay);
 }
 
 // Wait for DOM content to load.
