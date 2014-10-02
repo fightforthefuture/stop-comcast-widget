@@ -67,9 +67,21 @@ var animations = {
             // Optimizely test vvv
             this.optimizelyTextAB();
 
-            // If no org is set, then 16% chance of free press
-            if (!this.options.org && Math.random() < 0.02) {
-                this.options.org = 'fp';
+            if (!this.options.org)
+            {
+                var random_chance = Math.random();
+                if (random_chance < 0.02)
+                {
+                    this.options.org = 'fp';
+                }
+                else if (random_chance >= 0.02 && random_chance < 0.51)
+                {
+                    this.options.org = 'fftf_org';
+                }
+                else
+                {
+                    this.options.org = 'dp';
+                }
             }
 
             if (this.options.org == 'fp')
@@ -155,7 +167,13 @@ var animations = {
             });
 
             $('a.twitter').click(function(e) {
+
+                e.preventDefault();
                 trackLeaderboardStat({stat: 'share', data: 'twitter'});
+
+                var tw_text = encodeURIComponent(TWEET_TEXT);
+                window.open('https://twitter.com/intent/tweet?text=' + tw_text);
+
             });
 
             $('#call').click(function(e) {

@@ -1,0 +1,1 @@
+TWEET_TEXT = 'Don’t let Comcast take over half of America’s Internet. Tell Congress & @FCC to #StoptheTakeover” https://battleforthenet.com/comcast'
