@@ -222,32 +222,26 @@ var animations = {
         },
 
         postUser: function() {
-            var formFields = [
-                // "action_comment",
-                "address1",
-                "email",
-                "name",
-                "zip"
-            ];
             var doc = {};
 
             var fail = false;
 
-            var actionForm = $("form[name=petition]");
+            var is_fail = function(el) {
+                $(el).addClass('error');
+                fail = true;
+            }
 
-            formFields.forEach(function(field) {
-                $("input[name=" + field + "]", actionForm).removeClass('error');
-                if (
-                    $("input[name=" + field + "]", actionForm)[0]
-                    &&
-                    $("input[name=" + field + "]", actionForm).val() === ""
-                ) {
-                    fail = true;
-                    $("input[name=" + field + "]", actionForm).addClass('error');
-                } else {
-                    doc[field] = $("input[name=" + field + "]", actionForm).val();
-                }
-            });
+            if ($('#street_address').val() === "")
+                is_fail($('#street_address'));
+
+            if ($('#email').val() === "")
+                is_fail($('#email'));
+
+            if ($('#first_name').val() === "")
+                is_fail($('#first_name'));
+
+            if ($('#zip').val() === "")
+                is_fail($('#zip'));
 
             if (fail)
                 return alert('Please enter your info so we can sign the letter.');
@@ -260,9 +254,15 @@ var animations = {
 
 
             // doc['action_comment'] = $("[name=action_comment]").val();
-            doc['action'] = 'comcastmonopoly';
+            doc['guard'] = '';
+            doc['member[first_name]'] = $('#first_name').val();
+            doc['member[email]'] = $('#email').val();
+            doc['member[street_address]'] = $('#street_address').val();
+            doc['member[postcode]'] = $('#zip').val();
+            doc['hp_enabled'] = true;
+            doc['tag'] = 'comcastmonopoly';
             doc['action_comment'] = '';  // JL HACK
-            doc['country'] = $('#country').val();
+            doc['member[country]'] = $('#country').val();
 
             if ($('#opt-in').is(':checked') == false)
                 doc['opt_out'] = true;
@@ -272,8 +272,10 @@ var animations = {
             else
                 doc['org'] = this.default_org;
 
+            console.log('doc: ', doc);
+
             $.ajax({
-                url: "https://queue.battleforthenet.com/submit",
+                url: "https://queue.battleforthenet.com/action",
                 // url: "http://debbie:3019/submit",    // JL TEST ~
                 type: "post",
                 dataType: "json",
@@ -284,12 +286,14 @@ var animations = {
             });
             trackLeaderboardStat({stat: 'submit_form'});
 
+
             this.trackOptimizely('fcc_post');
 
             return true;
         },
 
         trackOptimizely: function(ev) {
+            return false;
             window['optimizely'] = window['optimizely'] || [];
             window.optimizely.push(["trackEvent", ev]);
         },
