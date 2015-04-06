@@ -27,7 +27,7 @@ var animations = {
         options: {
             debug: false,
             skipEmailSignup: false,
-            skipCallTool: false,
+            skipCallTool: true,
             fastAnimation: false,
             boxUnchecked: false,
             org: null
