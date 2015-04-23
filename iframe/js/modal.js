@@ -27,7 +27,7 @@ var animations = {
         options: {
             debug: false,
             skipEmailSignup: false,
-            skipCallTool: true,
+            skipCallTool: false,
             fastAnimation: false,
             boxUnchecked: false,
             org: null
@@ -70,13 +70,9 @@ var animations = {
             if (!this.options.org)
             {
                 var random_chance = Math.random();
-                if (random_chance < 0.02)
+                if (random_chance <= 0.5)
                 {
-                    this.options.org = 'fp';
-                }
-                else if (random_chance >= 0.02 && random_chance < 0.51)
-                {
-                    this.options.org = 'fftf_org';
+                    this.options.org = 'fftf';
                 }
                 else
                 {
@@ -84,17 +80,12 @@ var animations = {
                 }
             }
 
-            if (this.options.org == 'fp')
-            {
-                $('#fftf_disclosure').hide();
-                $('#fp_disclosure').show();
-            }
-            else if (this.options.org == 'dp')
+            if (this.options.org == 'dp')
             {
                 $('#fftf_disclosure').hide();
                 $('#dp_disclosure').show();
             }
-            else if (this.options.org == 'fftf_org')
+            else if (this.options.org == 'fftf')
             {
                 $('#fftf_disclosure').hide();
                 $('#fftf_org_disclosure').show();
@@ -321,9 +312,9 @@ var animations = {
             $('#call').html('Calling...');
 
             var data = {
-                campaignId: 'comcastmonopoly-roundrobin', 
+                campaignId: 'kill-merger', 
                 userPhone: num,
-                fftfCampaign: 'comcastmonopoly',
+                fftfCampaign: 'kill-merger',
                 fftfReferer: host,
                 fftfSession: session
             }
@@ -402,11 +393,8 @@ $(document).ready(function() {
         if (loc.indexOf('DP') != -1)
             animations.modal.options.org = 'dp';
 
-        if (loc.indexOf('FP') != -1)
-            animations.modal.options.org = 'fp'; 
-
         if (loc.indexOf('FFF') != -1)
-            animations.modal.options.org = 'fftf_org'; 
+            animations.modal.options.org = 'fftf'; 
                
         animations.modal.options.fastAnimation = true;
         animations.modal.start(); 
